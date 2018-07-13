@@ -34,9 +34,9 @@ public class SPProfile {
 
         return preferences.getString("user_id", "");
     }
-    public String getParent_id() {
+    public String getDriver_id() {
 
-        return preferences.getString("parent_id", "");
+        return preferences.getString("driver_id", "");
     }
 
 
@@ -115,10 +115,10 @@ public class SPProfile {
         editor.apply();
     }
 
-    public void setParent_id(String parent_id) {
+    public void setDriver_id(String driver_id) {
         // preferences = this.getSharedPreferences(prefName, 0);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("parent_id", parent_id);
+        editor.putString("driver_id", driver_id);
         editor.apply();
     }
 

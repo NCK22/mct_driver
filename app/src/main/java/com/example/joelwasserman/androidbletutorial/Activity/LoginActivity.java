@@ -9,8 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-
 import com.example.joelwasserman.androidbletutorial.APIClient;
 import com.example.joelwasserman.androidbletutorial.Interface.loginInterface;
 import com.example.joelwasserman.androidbletutorial.Pojo.ParentPojoLogin;
@@ -60,7 +58,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void login(){
 
-
         checkValidity();
 
         if(flagAllValid==true) {
@@ -79,7 +76,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         if (parentPojoLogin.getStatus().equalsIgnoreCase("true")) {
                             Log.e("Response", parentPojoLogin.getStatus());
                             try {
-                                Log.e("json response 1",""+parentPojoLogin.getObjProfile().get(0).get("parent_id"));
+                                Log.e("json response 1",""+parentPojoLogin.getObjProfile().get(0).get("driver_id"));
                             } catch (Exception e) {
                                 Log.e("exception",""+e);
                                 e.printStackTrace();
@@ -89,8 +86,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             JSONObject jsonObject=new JSONObject(parentPojoLogin.getObjProfile().get(0));
                             spProfile.setIsLogin("true");
                             try {
-                                Log.e("parent_id",jsonObject.getString("parent_id"));
-                                spProfile.setParent_id(jsonObject.getString("parent_id"));
+                                Log.e("driver_id",jsonObject.getString("driver_id"));
+                                spProfile.setDriver_id(jsonObject.getString("driver_id"));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -103,9 +100,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         else
                             showToast("Invalid username or Password");
-
                     }
-
 
                     progressDialog.dismiss();
                 }

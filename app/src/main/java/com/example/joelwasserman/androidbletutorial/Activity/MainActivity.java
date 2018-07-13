@@ -2,6 +2,7 @@ package com.example.joelwasserman.androidbletutorial.Activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -14,15 +15,28 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.joelwasserman.androidbletutorial.APIClient;
+import com.example.joelwasserman.androidbletutorial.Adapter.StudentAdapter;
+import com.example.joelwasserman.androidbletutorial.Interface.getChildListInterface;
+import com.example.joelwasserman.androidbletutorial.Pojo.ChildPojoStudProf;
+import com.example.joelwasserman.androidbletutorial.Pojo.ParentPojoStudProf;
 import com.example.joelwasserman.androidbletutorial.R;
+import com.example.joelwasserman.androidbletutorial.Storage.SPProfile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
     Button startScanningButton;
     Button stopScanningButton;
     TextView peripheralTextView;
+    RecyclerView rv_stud;
+    ProgressDialog progressDialog;
+    ArrayList<ChildPojoStudProf> mListItem=new ArrayList<ChildPojoStudProf>();
+    SPProfile spCustProfile;
+    StudentAdapter adapter;
+    public static ArrayList<String> list_macId=new ArrayList<String>();
+
     // Device scan callback.
     private ScanCallback leScanCallback = new ScanCallback() {
         @Override
@@ -58,7 +79,14 @@ public class MainActivity extends AppCompatActivity {
 //            𝑅𝑆𝑆𝐼𝑠𝑚𝑜𝑜𝑡h = 𝛼 ∗ 𝑅𝑆𝑆𝐼𝑛 + (1 − 𝛼) ∗ 𝑅𝑆𝑆𝐼𝑛−1
 
             Log.e("distance", "" + getDistance(result.getRssi(), txPower));
+            if(!list_macId.isEmpty())
+            {
+                if(!list_macId.contains(result.getDevice().getAddress()))
+                    list_macId.add(result.getDevice().getAddress());
+            }
+           // if(peripheralTextView.getText().toString().equalsIgnoreCase(""))
             peripheralTextView.append("MAC ADDRESS: " + result.getDevice().getAddress() + "\nRSSI: " + result.getRssi() + "\nBondState: " + result.getDevice().getBondState() + "\nDistance: " + calculateDistance(result.getRssi()) + "\n-----------------------------------------\n");
+           // adapter.notify();
 
         }
     };
@@ -67,6 +95,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        progressDialog=new ProgressDialog(this);
+        spCustProfile=new SPProfile(this);
+
+        rv_stud=(RecyclerView)findViewById(R.id.rv_stud);
+        rv_stud.setHasFixedSize(true);
+        rv_stud.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
 
         peripheralTextView = (TextView) findViewById(R.id.PeripheralTextView);
         peripheralTextView.setMovementMethod(new ScrollingMovementMethod());
@@ -110,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
             });
             builder.show();
         }
+
+        getStudentList();
     }
 
     double getDistance(int rssi, int txPower) {
@@ -192,4 +230,66 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void getStudentList(){
+
+        progressDialog.show();
+
+
+        getChildListInterface getResponse = APIClient.getClient().create(getChildListInterface.class);
+        Call<ParentPojoStudProf> call = getResponse.doGetListResources(spCustProfile.getDriver_id());
+        call.enqueue(new Callback<ParentPojoStudProf>() {
+            @Override
+            public void onResponse(Call<ParentPojoStudProf> call, Response<ParentPojoStudProf> response) {
+
+                Log.e("Inside","onResponse");
+                // Log.e("response body",response.body().getStatus());
+                //Log.e("response body",response.body().getMsg());
+                ParentPojoStudProf parentPojoStudProf =response.body();
+                if(parentPojoStudProf !=null){
+                    if(parentPojoStudProf.getStatus().equalsIgnoreCase("true")){
+                        mListItem=parentPojoStudProf.getObjProfile();
+                        //  noOfTabs=list_child.size();
+                        Log.e("Response","Success");
+
+                        if(mListItem.size()>0){
+                            displayData();
+                        }
+
+
+
+                        //      Log.e("objsize", ""+ parentPojoProfile.getObjProfile().size());
+
+                        //setHeader();
+
+                    }
+                }
+                else
+                    Log.e("parentpojotabwhome","null");
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<ParentPojoStudProf> call, Throwable t) {
+
+                Log.e("throwable",""+t);
+                progressDialog.dismiss();
+            }
+        });
+
+    }
+
+
+    private void displayData() {
+        adapter = new StudentAdapter(MainActivity.this, mListItem);
+
+        rv_stud.setAdapter(adapter);
+
+        /*if (adapter.getItemCount() == 0) {
+            lyt_not_found.setVisibility(View.VISIBLE);
+        } else {
+            lyt_not_found.setVisibility(View.GONE);
+        }*/
+    }
+
 }
