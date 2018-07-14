@@ -19,6 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.joelwasserman.androidbletutorial.APIClient;
+import com.example.joelwasserman.androidbletutorial.Interface.addLocationInterface;
+import com.example.joelwasserman.androidbletutorial.Interface.getChildListInterface;
+import com.example.joelwasserman.androidbletutorial.Pojo.ParentPojoAddLocation;
+import com.example.joelwasserman.androidbletutorial.Pojo.ParentPojoStudProf;
+import com.example.joelwasserman.androidbletutorial.Storage.SPProfile;
 import com.example.joelwasserman.androidbletutorial.Storage.SPrefUserInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -47,6 +53,10 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Neha on 27-11-2017.
@@ -82,7 +92,7 @@ public class TrackLocService extends Service implements
 
     String url = "http://www.thinkbank.co.in/Rajeshahi_app/SendLocation.php";
     public static String vid="",uid="",stime="";
-    private SPrefUserInfo sPrefUserInfo;
+    private SPProfile spProfile;
     Context context,ctxperm;
     public static TrackLocService instance=null;
 
@@ -219,7 +229,7 @@ public class TrackLocService extends Service implements
     @Override
     public void onConnected(Bundle bundle) {
         Log.e("onConnected-isConnected", String.valueOf(mGoogleApiClient.isConnected()));
-        if(!sPrefUserInfo.getUserInfo().equals(""))
+        if(!spProfile.getDriver_id().equals(""))
         startLocationUpdates();
         else
             Log.e("Location update stopped","logged out");
@@ -277,17 +287,23 @@ public class TrackLocService extends Service implements
        /* if(FrontActivity.isVisitStarted==true)*/
 
     if(difference>-2.0f && difference<2.0f) {
-        if (sPrefUserInfo.getVisitInfo().equals("yes") && mCurrentLocation.getAccuracy() <= 20) {
-            Log.e("SLS", sPrefUserInfo.getUserInfo() + sPrefUserInfo.getVisitInfo());
-            if (!sPrefUserInfo.getUserInfo().equals("") && !sPrefUserInfo.getVisitInfo().equals("")) {
+        if (!spProfile.getDriver_id().equals("") && mCurrentLocation.getAccuracy() <= 20) {
+          //  Log.e("SLS", sPrefUserInfo.getUserInfo() + sPrefUserInfo.getVisitInfo());
+         //   if (!sPrefUserInfo.getUserInfo().equals("") && !sPrefUserInfo.getVisitInfo().equals("")) {
               //  writeToFile(String.valueOf(mCurrentLocation.getLatitude()),context);
               //  readFromFile(context);
-                sendLocationString();
-            }
+
+
+            //sendLocationString();
+                addLocation();
+
+
+          //  }
         /*else if(FrontActivity.isVisitStarted==false)*/
-            else if (sPrefUserInfo.getUserInfo().equals("") || sPrefUserInfo.getVisitInfo().equals(""))
-                stopLocationUpdates();
+
         }
+        else if (spProfile.getDriver_id().equals(""))
+            stopLocationUpdates();
     }
        // getLocationString();
        //getLocatonObject();
@@ -374,6 +390,49 @@ public class TrackLocService extends Service implements
         AppController.getInstance().addToRequestQueue(stringRequest, tag_string_req);*/
     }
 
+    public void addLocation(){
+
+      //  progressDialog.show();
+
+
+        addLocationInterface getResponse = APIClient.getClient().create(addLocationInterface.class);
+        Call<ParentPojoAddLocation> call = getResponse.doGetListResources(String.valueOf(mCurrentLocation.getLatitude()),String.valueOf(mCurrentLocation.getLongitude()),
+                spProfile.getDriver_id(),spProfile.getMac_id());
+        call.enqueue(new Callback<ParentPojoAddLocation>() {
+            @Override
+            public void onResponse(Call<ParentPojoAddLocation> call, Response<ParentPojoAddLocation> response) {
+
+                Log.e("Inside","onResponse");
+                // Log.e("response body",response.body().getStatus());
+                //Log.e("response body",response.body().getMsg());
+                ParentPojoAddLocation parentPojoAddLocation =response.body();
+                if(parentPojoAddLocation !=null){
+                    if(parentPojoAddLocation.getStatus().equalsIgnoreCase("true")){
+
+                        //  noOfTabs=list_child.size();
+                        Log.e("Response",parentPojoAddLocation.getMessage());
+
+                        //      Log.e("objsize", ""+ parentPojoProfile.getObjProfile().size());
+
+                        //setHeader();
+
+                    }
+                }
+                else
+                    Log.e("parentpojotabwhome","null");
+              //  progressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<ParentPojoAddLocation> call, Throwable t) {
+
+                Log.e("throwable",""+t);
+               // progressDialog.dismiss();
+            }
+        });
+
+    }
+
 
 /*
     public void getLocationString() {
@@ -452,10 +511,10 @@ public class TrackLocService extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId) {
         //return super.onStartCommand(intent, flags, startId);
         Log.e("Service", "onStart fired ....");
-        sPrefUserInfo=new SPrefUserInfo(context);
+        spProfile=new SPProfile(context);
       //  uid=sPrefUserInfo.getUserInfo();
 
-        Log.e("u_id2", /*SplashActivity.*/sPrefUserInfo.getUserInfo());
+     //   Log.e("u_id2", /*SplashActivity.*/sPrefUserInfo.getUserInfo());
         if(intent!=null) {
             uid = intent.getStringExtra("uid");
             vid = intent.getStringExtra("vid");
@@ -464,9 +523,9 @@ public class TrackLocService extends Service implements
         else
         {
 
-            uid = sPrefUserInfo.getUserInfo();
+            /*uid = sPrefUserInfo.getUserInfo();
             vid =sPrefUserInfo.getVisitId();
-            stime = sPrefUserInfo.getStartTimeInfo();
+            stime = sPrefUserInfo.getStartTimeInfo();*/
         }
 /*
         Log.e("u_id",uid);

@@ -64,14 +64,14 @@
                             android:orientation="horizontal">
 
                             <ImageView
-                                android:id="@+id/img_info"
+                                android:id="@+id/img_call"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.25"
                                 android:src="@drawable/ic_call"
                                 />
                             <ImageView
-                                android:id="@+id/img_call"
+                                android:id="@+id/img_info"
                                 android:layout_width="0dp"
                                 android:layout_weight="0.25"
                                 android:layout_height="match_parent"

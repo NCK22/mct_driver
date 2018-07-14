@@ -30,30 +30,34 @@ public class SPProfile {
 
         return preferences.getString("profile_id", "");
     }
-    public String getUser_id() {
 
-        return preferences.getString("user_id", "");
-    }
     public String getDriver_id() {
 
         return preferences.getString("driver_id", "");
     }
 
+    public String getName() {
 
-    public String getReligion() {
-      //  preferences = this.getSharedPreferences(prefName, 0);
-        return preferences.getString("religion", "");
+        return preferences.getString("name", "");
+    }
+    public String getMac_id() {
+
+        return preferences.getString("mac_id", "");
+    }
+    public String getVeh_type() {
+
+        return preferences.getString("veh_type", "");
+    }
+    public String getVeh_Reg() {
+
+        return preferences.getString("veh_reg", "");
     }
 
-    public String getGender() {
-        //preferences = this.getSharedPreferences(prefName, 0);
-        return preferences.getString("gender", "");
+    public String getSchol_Id() {
+
+        return preferences.getString("school_id", "");
     }
 
-    public String getDob() {
-        //preferences = this.getSharedPreferences(prefName, 0);
-        return preferences.getString("dob", "");
-    }
 
     public String getMobile() {
         //preferences = this.getSharedPreferences(prefName, 0);
@@ -65,41 +69,37 @@ public class SPProfile {
         return preferences.getString("email", "");
     }
 
-    public String getMatrimonyId() {
+    public String getAddress() {
         // preferences = this.getSharedPreferences(prefName, 0);
-        return preferences.getString("matrimony_id", "");
+        return preferences.getString("email", "");
     }
 
-    public String getShortListedProf() {
+    public String getUname() {
         // preferences = this.getSharedPreferences(prefName, 0);
-        return preferences.getString("shortlistMy", "");
+        return preferences.getString("username", "");
     }
 
-    public String getProfilePhotoPath() {
+    public String getPassword() {
         // preferences = this.getSharedPreferences(prefName, 0);
-        return preferences.getString("profile_photo", "");
+        return preferences.getString("password", "");
     }
 
-    public void setProfilePhotoPath(String profile_photo) {
-        //preferences = this.getSharedPreferences(prefName, 0);
+
+
+    public void setUsername(String profile_id) {
+        // preferences = this.getSharedPreferences(prefName, 0);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("profile_photo", profile_photo);
+        editor.putString("username", profile_id);
         editor.apply();
     }
 
-    public void setShortListedProf(String shortlistMy) {
-        //preferences = this.getSharedPreferences(prefName, 0);
+    public void setPassword(String profile_id) {
+        // preferences = this.getSharedPreferences(prefName, 0);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("shortlistMy", shortlistMy);
+        editor.putString("password", profile_id);
         editor.apply();
     }
 
-    public void setReligion(String religion) {
-        //preferences = this.getSharedPreferences(prefName, 0);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("religion", religion);
-        editor.apply();
-    }
 
     public void setProfile_id(String profile_id) {
        // preferences = this.getSharedPreferences(prefName, 0);
@@ -108,12 +108,7 @@ public class SPProfile {
         editor.apply();
     }
 
-    public void setUser_id(String user_id) {
-        // preferences = this.getSharedPreferences(prefName, 0);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("user_id", user_id);
-        editor.apply();
-    }
+
 
     public void setDriver_id(String driver_id) {
         // preferences = this.getSharedPreferences(prefName, 0);
@@ -122,17 +117,10 @@ public class SPProfile {
         editor.apply();
     }
 
-    public void setGender(String gender) {
-        //preferences = this.getSharedPreferences(prefName, 0);
+    public void setMac_id(String mac_id) {
+        // preferences = this.getSharedPreferences(prefName, 0);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("gender", gender);
-        editor.apply();
-    }
-
-    public void setDob(String dob) {
-        //preferences = this.getSharedPreferences(prefName, 0);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("dob", dob);
+        editor.putString("mac_id", mac_id);
         editor.apply();
     }
 
@@ -150,12 +138,38 @@ public class SPProfile {
         editor.apply();
     }
 
-    public void setMatrimonyId(String matrimony_id) {
+
+    public void setAddress(String address) {
         //preferences = this.getSharedPreferences(prefName, 0);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("matrimony_id", matrimony_id);
+        editor.putString("address", address);
         editor.apply();
     }
+    public void setSchoolId(String email) {
+        //preferences = this.getSharedPreferences(prefName, 0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("school_id", email);
+        editor.apply();
+    }
+    public void setVehReg(String email) {
+        //preferences = this.getSharedPreferences(prefName, 0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("veh_reg", email);
+        editor.apply();
+    }
+    public void setVehType(String email) {
+        //preferences = this.getSharedPreferences(prefName, 0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("veh_type", email);
+        editor.apply();
+    }
+    public void setName(String email) {
+        //preferences = this.getSharedPreferences(prefName, 0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("name", email);
+        editor.apply();
+    }
+
 
     public void setIsLogin(String is_login) {
         //preferences = this.getSharedPreferences(prefName, 0);

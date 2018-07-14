@@ -3,6 +3,7 @@ package com.example.joelwasserman.androidbletutorial.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.joelwasserman.androidbletutorial.Activity.MainActivity;
+import com.example.joelwasserman.androidbletutorial.Activity.StudDetailActivity;
 import com.example.joelwasserman.androidbletutorial.Pojo.ChildPojoStudProf;
 import com.example.joelwasserman.androidbletutorial.R;
 
@@ -55,6 +57,16 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ItemRowH
              /*   Intent intent=new Intent(mContext,StudDetailActivity.class);
                 intent.putExtra("child_id",singleItem.getChild_id());
                 mContext.startActivity(intent);*/
+            }
+        });
+
+        holder.imgInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("clicked","adapter");
+                Intent intent=new Intent(mContext,StudDetailActivity.class);
+                intent.putExtra("child_id",singleItem.getChild_id());
+                mContext.startActivity(intent);
             }
         });
        /* if (!singleItem.getUserCity().isEmpty()) {

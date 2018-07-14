@@ -12,13 +12,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,6 +36,7 @@ import com.example.joelwasserman.androidbletutorial.Interface.getChildListInterf
 import com.example.joelwasserman.androidbletutorial.Pojo.ChildPojoStudProf;
 import com.example.joelwasserman.androidbletutorial.Pojo.ParentPojoStudProf;
 import com.example.joelwasserman.androidbletutorial.R;
+import com.example.joelwasserman.androidbletutorial.Services.TrackLocService;
 import com.example.joelwasserman.androidbletutorial.Storage.SPProfile;
 
 import java.util.ArrayList;
@@ -55,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     StudentAdapter adapter;
     public static ArrayList<String> list_macId=new ArrayList<String>();
 
+    private boolean gps_enabled=false;
+    public static AlertDialog.Builder builder;
+    public static boolean builderFlag=false;
     // Device scan callback.
     private ScanCallback leScanCallback = new ScanCallback() {
         @Override
@@ -103,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
         rv_stud.setHasFixedSize(true);
         rv_stud.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-
         peripheralTextView = (TextView) findViewById(R.id.PeripheralTextView);
         peripheralTextView.setMovementMethod(new ScrollingMovementMethod());
 
@@ -141,13 +151,16 @@ public class MainActivity extends AppCompatActivity {
             builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
                 }
             });
             builder.show();
         }
 
         getStudentList();
+    //    EnableRuntimePermissionToAccessCamera();
+
+     //   startService(new Intent(MainActivity.this, TrackLocService.class));
     }
 
     double getDistance(int rssi, int txPower) {
@@ -186,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
             case PERMISSION_REQUEST_COARSE_LOCATION: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     System.out.println("coarse location permission granted");
+                    startService(new Intent(MainActivity.this, TrackLocService.class));
                 } else {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("Functionality limited");
@@ -202,6 +216,27 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return;
             }
+
+            case 2: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // {Some Code}
+
+                    startService(new Intent(MainActivity.this, TrackLocService.class));
+                }
+            }
+
+            case 3:
+                        Log.e("test", "onActivityResult");
+                        if(gps_enabled)
+                            finish();
+                        else
+                            isLocationEnabled();
+                        // broadcastFlag=false;
+                        break;
+
+
+
+
         }
     }
 
@@ -292,4 +327,128 @@ public class MainActivity extends AppCompatActivity {
         }*/
     }
 
+    public void EnableRuntimePermissionToAccessCamera(){
+
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.CAMERA) &&
+                (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) &&
+                (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED) &&
+                (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED))
+        {
+
+            // Printing toast message after enabling runtime permission.
+            //   Toast.makeText(this,"CAMERA permission allows us to Access CAMERA app", Toast.LENGTH_LONG).show();
+
+        } else {
+
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
+
+        }
+        progressDialog.dismiss();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isLocationEnabled();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.menu_logout:
+                logout();
+                break;
+
+            case R.id.menu_profile:
+                startActivity(new Intent(MainActivity.this,ProfileActivity.class));
+                break;
+
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
+
+    private void logout() {
+
+        new android.support.v7.app.AlertDialog.Builder(MainActivity.this)
+                .setTitle(getString(R.string.menu_logout))
+                .setMessage(getString(R.string.logout_msg))
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //MyApp.saveIsLogin(false);
+                        spCustProfile.setIsLogin("false");
+                        spCustProfile.setDriver_id("");
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                //  .setIcon(R.drawable.ic_logout)
+                .show();
+    }
+
+    public void isLocationEnabled()
+    {
+        builderFlag=true;
+        LocationManager lm = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+        gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+
+        if (!gps_enabled) {
+
+            if(builder!=null)
+                builder=null;
+
+            builder =
+                    new AlertDialog.Builder(this);
+            final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
+            final String message = "Disabling location will stop tracking"
+                    + " Do you still want to turn off location?";
+
+            builder.setMessage(message)
+                    .setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface d, int id) {
+                                    //context.this.startActivityForResult(new Intent(action),1);
+                                    d.dismiss();
+                                    isLocationEnabled();
+                                    //   builderFlag=false;
+                                //    getCurrentVisit();
+                                    //  broadcastFlag=false;
+                                }
+                            })
+                    .setNegativeButton("No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface d, int id) {
+                                    d.cancel();
+                                    MainActivity.this.startActivityForResult(new Intent(action),3);
+                                    // isLocationEnabled();
+                                }
+                            });
+            builder.setCancelable(false);
+            builder.create().show();
+
+        }
+    }
 }

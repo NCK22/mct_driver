@@ -88,6 +88,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             try {
                                 Log.e("driver_id",jsonObject.getString("driver_id"));
                                 spProfile.setDriver_id(jsonObject.getString("driver_id"));
+                                spProfile.setMac_id(jsonObject.getString("mac_id"));
+                                spProfile.setName(jsonObject.getString("name"));
+
+                                spProfile.setAddress(jsonObject.getString("address"));
+                                spProfile.setVehReg(jsonObject.getString("vehicle_reg_no"));
+                                spProfile.setVehType(jsonObject.getString("vehicle_type"));
+
+                                spProfile.setUsername(jsonObject.getString("username"));
+                                spProfile.setPassword(jsonObject.getString("password"));
+                                spProfile.setMobile(jsonObject.getString("school_id"));
+                                spProfile.setSchoolId(jsonObject.getString("school_id"));
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
