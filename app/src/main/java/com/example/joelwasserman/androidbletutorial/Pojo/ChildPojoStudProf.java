@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class ChildPojoStudProf {
 
+    String found="false";
+
     @SerializedName("driverId")
     String driverId;
 
@@ -53,14 +55,20 @@ public class ChildPojoStudProf {
     String stauts;
 
 
-
-
     public String getDriverId() {
         return driverId;
     }
 
     public void setDriverId(String driverId) {
         this.driverId = driverId;
+    }
+
+    public String getFound() {
+        return found;
+    }
+
+    public void setFound(String found) {
+        this.found = found;
     }
 
     public String getName() {

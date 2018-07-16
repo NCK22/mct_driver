@@ -1,7 +1,11 @@
 package com.example.joelwasserman.androidbletutorial.Adapter;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.joelwasserman.androidbletutorial.Activity.MainActivity;
 import com.example.joelwasserman.androidbletutorial.Activity.StudDetailActivity;
+
 import com.example.joelwasserman.androidbletutorial.Pojo.ChildPojoStudProf;
 import com.example.joelwasserman.androidbletutorial.R;
 
@@ -44,7 +49,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ItemRowH
         final ChildPojoStudProf singleItem = dataList.get(position);
         holder.textName.setText(singleItem.getChildName());
 
-        if(MainActivity.list_macId.contains(singleItem.getMacId()))
+        if(MainActivity.list_macId.contains(singleItem.getChildMacID()))
             holder.imgStatus.setImageResource(R.drawable.ic_present);
       /*  holder.textDescrip.setText(singleItem.getCompDescr());
         holder.textIType.setText(singleItem.getCompIType());
@@ -69,6 +74,23 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ItemRowH
                 mContext.startActivity(intent);
             }
         });
+
+        holder.imgCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                //callIntent.setData(Uri.parse("tel:"+singleItem.getPhone()));
+                callIntent.setData(Uri.parse("tel:9834905776"));
+
+                if (ActivityCompat.checkSelfPermission(mContext,
+                        Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                mContext.startActivity(callIntent);
+            }
+
+        });
+
        /* if (!singleItem.getUserCity().isEmpty()) {
             holder.textCity.setText(singleItem.getUserCity());
         } else {

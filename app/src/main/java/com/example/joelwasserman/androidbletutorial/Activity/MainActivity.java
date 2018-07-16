@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView rv_stud;
     ProgressDialog progressDialog;
     ArrayList<ChildPojoStudProf> mListItem=new ArrayList<ChildPojoStudProf>();
+    ArrayList<ChildPojoStudProf> mListItem_bckp=new ArrayList<ChildPojoStudProf>();
     SPProfile spCustProfile;
     StudentAdapter adapter;
     public static ArrayList<String> list_macId=new ArrayList<String>();
@@ -90,14 +91,24 @@ public class MainActivity extends AppCompatActivity {
 //            𝑅𝑆𝑆𝐼𝑠𝑚𝑜𝑜𝑡h = 𝛼 ∗ 𝑅𝑆𝑆𝐼𝑛 + (1 − 𝛼) ∗ 𝑅𝑆𝑆𝐼𝑛−1
 
             Log.e("distance", "" + getDistance(result.getRssi(), txPower));
-            if(!list_macId.isEmpty())
+            if(!result.getDevice().getAddress().equalsIgnoreCase(""))
             {
-                if(!list_macId.contains(result.getDevice().getAddress()))
+                if(list_macId.isEmpty()|| !list_macId.contains(result.getDevice().getAddress())) {
                     list_macId.add(result.getDevice().getAddress());
+                    for(int i=0;i<mListItem.size();i++)
+                    {
+                        Log.e("MACId",mListItem.get(i).getChildMacID());
+                        if(mListItem.get(i).getChildMacID().equalsIgnoreCase(result.getDevice().getAddress()))
+                            mListItem.get(i).setFound("true");
+                    }
+                }
             }
-           // if(peripheralTextView.getText().toString().equalsIgnoreCase(""))
-            peripheralTextView.append("MAC ADDRESS: " + result.getDevice().getAddress() + "\nRSSI: " + result.getRssi() + "\nBondState: " + result.getDevice().getBondState() + "\nDistance: " + calculateDistance(result.getRssi()) + "\n-----------------------------------------\n");
-           // adapter.notify();
+
+            if(peripheralTextView.getText().toString().equalsIgnoreCase(""))
+            peripheralTextView.setText("MAC ADDRESS: " + result.getDevice().getAddress() + "\nRSSI: " + result.getRssi() + "\nBondState: " + result.getDevice().getBondState() + "\nDistance: " + calculateDistance(result.getRssi()) + "\n-----------------------------------------\n");
+           adapter.notifyDataSetChanged();
+
+
 
         }
     };
@@ -284,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
                 if(parentPojoStudProf !=null){
                     if(parentPojoStudProf.getStatus().equalsIgnoreCase("true")){
                         mListItem=parentPojoStudProf.getObjProfile();
+                        mListItem_bckp=parentPojoStudProf.getObjProfile();
                         //  noOfTabs=list_child.size();
                         Log.e("Response","Success");
 
@@ -316,8 +328,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void displayData() {
-        adapter = new StudentAdapter(MainActivity.this, mListItem);
 
+        adapter = new StudentAdapter(MainActivity.this, mListItem);
         rv_stud.setAdapter(adapter);
 
         /*if (adapter.getItemCount() == 0) {
