@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature
-        android:name="android.hardware.bluetooth_le"
+        android:name="MCT Driver"
         android:required="true" />
 
     <application

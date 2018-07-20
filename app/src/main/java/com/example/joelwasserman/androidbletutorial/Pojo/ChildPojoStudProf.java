@@ -175,5 +175,4 @@ public class ChildPojoStudProf {
         this.childMacID = childMacID;
     }
 
-
 }

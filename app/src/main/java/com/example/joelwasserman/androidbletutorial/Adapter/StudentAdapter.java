@@ -49,8 +49,12 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ItemRowH
         final ChildPojoStudProf singleItem = dataList.get(position);
         holder.textName.setText(singleItem.getChildName());
 
-        if(MainActivity.list_macId.contains(singleItem.getChildMacID()))
+       /* if(MainActivity.list_macId.contains(singleItem.getChildMacID()))
+            holder.imgStatus.setImageResource(R.drawable.ic_present);*/
+
+        if(singleItem.getFound().equalsIgnoreCase("true"))
             holder.imgStatus.setImageResource(R.drawable.ic_present);
+
       /*  holder.textDescrip.setText(singleItem.getCompDescr());
         holder.textIType.setText(singleItem.getCompIType());
         holder.textLoc.setText(singleItem.getCompLoc());
@@ -79,8 +83,8 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ItemRowH
             @Override
             public void onClick(View v) {
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                //callIntent.setData(Uri.parse("tel:"+singleItem.getPhone()));
-                callIntent.setData(Uri.parse("tel:9834905776"));
+                callIntent.setData(Uri.parse("tel:"+singleItem.getPhone()));
+                //callIntent.setData(Uri.parse("tel:"+));
 
                 if (ActivityCompat.checkSelfPermission(mContext,
                         Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
