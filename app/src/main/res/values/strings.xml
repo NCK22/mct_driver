@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">AndroidBLETutorial</string>
-
+    <string name="app_name">MCT Driver</string>
     <string name="menu_logout">Logout</string>
     <string name="logout_msg">Do you really want to log out?</string>
 </resources>

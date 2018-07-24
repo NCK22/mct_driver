@@ -33,7 +33,10 @@ import android.widget.TextView;
 import com.example.joelwasserman.androidbletutorial.APIClient;
 import com.example.joelwasserman.androidbletutorial.Adapter.StudentAdapter;
 import com.example.joelwasserman.androidbletutorial.Interface.getChildListInterface;
+import com.example.joelwasserman.androidbletutorial.Interface.setChildStatusActiveInterface;
+import com.example.joelwasserman.androidbletutorial.Interface.setScannedByInterface;
 import com.example.joelwasserman.androidbletutorial.Pojo.ChildPojoStudProf;
+import com.example.joelwasserman.androidbletutorial.Pojo.CommonParentPojo;
 import com.example.joelwasserman.androidbletutorial.Pojo.ParentPojoStudProf;
 import com.example.joelwasserman.androidbletutorial.R;
 import com.example.joelwasserman.androidbletutorial.Services.TrackLocService;
@@ -91,10 +94,12 @@ public class MainActivity extends AppCompatActivity {
 //            𝑅𝑆𝑆𝐼𝑠𝑚𝑜𝑜𝑡h = 𝛼 ∗ 𝑅𝑆𝑆𝐼𝑛 + (1 − 𝛼) ∗ 𝑅𝑆𝑆𝐼𝑛−1
 
             Log.e("distance", "" + getDistance(result.getRssi(), txPower));
-            if(!result.getDevice().getAddress().equalsIgnoreCase(""))
-            {
+           /* if(!result.getDevice().getAddress().equalsIgnoreCase(""))
+            {*/
+           Log.e("macIdsize",""+list_macId.size());
                 if(list_macId.isEmpty()|| !list_macId.contains(result.getDevice().getAddress())) {
                     list_macId.add(result.getDevice().getAddress());
+                    Log.e("mListItem size",""+mListItem.size());
                     for(int i=0;i<mListItem.size();i++)
                     {
                         Log.e("MACId",mListItem.get(i).getChildMacID());
@@ -102,14 +107,12 @@ public class MainActivity extends AppCompatActivity {
                             mListItem.get(i).setFound("true");
                     }
                 }
-            }
+           // }
 
-            if(peripheralTextView.getText().toString().equalsIgnoreCase(""))
+            //if(!peripheralTextView.getText().toString().contains(result.getDevice().getAddress()))
+            if(!list_macId.contains(result.getDevice().getAddress()))
             peripheralTextView.setText("MAC ADDRESS: " + result.getDevice().getAddress() + "\nRSSI: " + result.getRssi() + "\nBondState: " + result.getDevice().getBondState() + "\nDistance: " + calculateDistance(result.getRssi()) + "\n-----------------------------------------\n");
            adapter.notifyDataSetChanged();
-
-
-
         }
     };
 
@@ -127,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
 
         peripheralTextView = (TextView) findViewById(R.id.PeripheralTextView);
         peripheralTextView.setMovementMethod(new ScrollingMovementMethod());
+
+        if(list_macId!=null)
+            list_macId.clear();
 
         startScanningButton = (Button) findViewById(R.id.StartScanButton);
         startScanningButton.setOnClickListener(new View.OnClickListener() {
@@ -252,6 +258,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startScanning() {
+        if(list_macId!=null)
+            list_macId.clear();
         System.out.println("start scanning");
         peripheralTextView.setText("");
         startScanningButton.setVisibility(View.INVISIBLE);
@@ -259,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
+
                 btScanner.startScan(leScanCallback);
             }
         });
@@ -275,12 +284,22 @@ public class MainActivity extends AppCompatActivity {
                 btScanner.stopScan(leScanCallback);
             }
         });
+
+        for(int i=0;i<mListItem.size();i++)
+        {
+            if(mListItem.get(i).getFound().equalsIgnoreCase("true"))
+          //  setChildStatusActive(mListItem.get(i).getChild_id(),mListItem.get(i).getChildMacID());
+                setScannedBy(mListItem.get(i).getChildMacID());
+        }
+
     }
 
     public void getStudentList(){
 
         progressDialog.show();
 
+if(mListItem!=null)
+    mListItem.clear();
 
         getChildListInterface getResponse = APIClient.getClient().create(getChildListInterface.class);
         Call<ParentPojoStudProf> call = getResponse.doGetListResources(spCustProfile.getDriver_id());
@@ -318,6 +337,96 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ParentPojoStudProf> call, Throwable t) {
+
+                Log.e("throwable",""+t);
+                progressDialog.dismiss();
+            }
+        });
+
+    }
+
+    public void setChildStatusActive(String child_id,String mac_id){
+
+        progressDialog.show();
+
+        if(mListItem!=null)
+            mListItem.clear();
+
+        setChildStatusActiveInterface getResponse = APIClient.getClient().create(setChildStatusActiveInterface.class);
+        Call<CommonParentPojo> call = getResponse.doGetListResources(child_id,"1",mac_id);
+        call.enqueue(new Callback<CommonParentPojo>() {
+            @Override
+            public void onResponse(Call<CommonParentPojo> call, Response<CommonParentPojo> response) {
+
+                Log.e("Inside","onResponse");
+                // Log.e("response body",response.body().getStatus());
+                //Log.e("response body",response.body().getMsg());
+                CommonParentPojo CommonParentPojo =response.body();
+                if(CommonParentPojo !=null){
+                    if(CommonParentPojo.getStatus().equalsIgnoreCase("true")){
+
+                        //  noOfTabs=list_child.size();
+                        Log.e("Response","Success");
+
+
+                        //      Log.e("objsize", ""+ parentPojoProfile.getObjProfile().size());
+
+                        //setHeader();
+
+                    }
+                }
+                else
+                    Log.e("parentpojotabwhome","null");
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<CommonParentPojo> call, Throwable t) {
+
+                Log.e("throwable",""+t);
+                progressDialog.dismiss();
+            }
+        });
+
+    }
+
+    public void setScannedBy(String child_mac_id){
+
+        progressDialog.show();
+
+       /* if(mListItem!=null)
+            mListItem.clear();*/
+
+        setScannedByInterface getResponse = APIClient.getClient().create(setScannedByInterface.class);
+        Call<CommonParentPojo> call = getResponse.doGetListResources(child_mac_id,spCustProfile.getDriver_id(),"driver");
+        call.enqueue(new Callback<CommonParentPojo>() {
+            @Override
+            public void onResponse(Call<CommonParentPojo> call, Response<CommonParentPojo> response) {
+
+                Log.e("Inside","onResponse");
+                // Log.e("response body",response.body().getStatus());
+                //Log.e("response body",response.body().getMsg());
+                CommonParentPojo CommonParentPojo =response.body();
+                if(CommonParentPojo !=null){
+                    if(CommonParentPojo.getStatus().equalsIgnoreCase("true")){
+
+                        //  noOfTabs=list_child.size();
+                        Log.e("Response","Success");
+
+
+                        //      Log.e("objsize", ""+ parentPojoProfile.getObjProfile().size());
+
+                        //setHeader();
+
+                    }
+                }
+                else
+                    Log.e("parentpojotabwhome","null");
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<CommonParentPojo> call, Throwable t) {
 
                 Log.e("throwable",""+t);
                 progressDialog.dismiss();
@@ -402,6 +511,7 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage(getString(R.string.logout_msg))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        stopScanning();
                         //MyApp.saveIsLogin(false);
                         spCustProfile.setIsLogin("false");
                         spCustProfile.setDriver_id("");
@@ -462,5 +572,7 @@ public class MainActivity extends AppCompatActivity {
             builder.create().show();
 
         }
+        else
+            startService(new Intent(MainActivity.this, TrackLocService.class));
     }
 }

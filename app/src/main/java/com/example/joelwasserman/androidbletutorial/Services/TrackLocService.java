@@ -123,7 +123,7 @@ public class TrackLocService extends Service implements
         }
 
         createLocationRequest();
-       /* mGoogleApiClient = new GoogleApiClient.Builder(this)
+    /*    mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
