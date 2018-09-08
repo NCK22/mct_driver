@@ -203,8 +203,6 @@ public class StudDetailActivity extends AppCompatActivity  {
 
 
                     }
-
-
                     progressDialog.dismiss();
                 }
 

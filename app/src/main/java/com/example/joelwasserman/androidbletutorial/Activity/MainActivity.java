@@ -34,6 +34,7 @@ import com.example.joelwasserman.androidbletutorial.APIClient;
 import com.example.joelwasserman.androidbletutorial.Adapter.StudentAdapter;
 import com.example.joelwasserman.androidbletutorial.Interface.getChildListInterface;
 import com.example.joelwasserman.androidbletutorial.Interface.setChildStatusActiveInterface;
+
 import com.example.joelwasserman.androidbletutorial.Interface.setScannedByInterface;
 import com.example.joelwasserman.androidbletutorial.Pojo.ChildPojoStudProf;
 import com.example.joelwasserman.androidbletutorial.Pojo.CommonParentPojo;
@@ -288,8 +289,11 @@ public class MainActivity extends AppCompatActivity {
         for(int i=0;i<mListItem.size();i++)
         {
             if(mListItem.get(i).getFound().equalsIgnoreCase("true"))
+
           //  setChildStatusActive(mListItem.get(i).getChild_id(),mListItem.get(i).getChildMacID());
                 setScannedBy(mListItem.get(i).getChildMacID());
+          //  setChildStatusActive(mListItem.get(i).getChild_id(),mListItem.get(i).getChildMacID());
+
         }
 
     }
@@ -389,6 +393,7 @@ if(mListItem!=null)
         });
 
     }
+
 
     public void setScannedBy(String child_mac_id){
 
