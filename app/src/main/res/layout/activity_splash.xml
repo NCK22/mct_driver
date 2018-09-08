@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#772299">
+        android:background="@drawable/logo">
 
         <TextView
             android:layout_width="match_parent"
@@ -23,7 +23,8 @@
             android:textColor="#FFFFFF"
             android:layout_gravity="center"
             android:textSize="50sp"
-            android:text="MCT Driver"/>
+            android:text="MCT Driver"
+            android:visibility="gone"/>
     </LinearLayout>
 
 </FrameLayout>
