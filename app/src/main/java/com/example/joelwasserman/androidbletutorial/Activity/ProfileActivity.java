@@ -2,6 +2,7 @@ package com.example.joelwasserman.androidbletutorial.Activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.example.joelwasserman.androidbletutorial.R;
@@ -12,12 +13,20 @@ public class ProfileActivity extends AppCompatActivity {
 
     TextView tvParentId,tvName,tvMacId,tvVehType,tvAddress,tvPhone,tvVehReg,tvUName,tvPwd,tvSchoolId;
 
+    Toolbar toolbar;
+    TextView toolbar_textview;
     SPProfile spProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        toolbar=(Toolbar) findViewById(R.id.toolbar);
+        toolbar_textview=(TextView)findViewById(R.id.toolbar_title);
+        toolbar.setTitle("");
+        toolbar_textview.setText("Profile");
+        setSupportActionBar(toolbar);
 
         spProfile=new SPProfile(this);
 

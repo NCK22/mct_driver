@@ -11,13 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-  <!--  <include
+    <include
         android:id="@+id/toolbar_main"
         layout="@layout/row_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" />
--->
     <LinearLayout
         android:id="@+id/ll_basic"
         android:layout_width="match_parent"
@@ -28,6 +27,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:text="Student Profile "
             android:layout_gravity="center"
             android:textStyle="bold"

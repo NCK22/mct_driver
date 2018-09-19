@@ -31,7 +31,9 @@ import retrofit2.Response;
 public class StudDetailActivity extends AppCompatActivity  {
 
     TextView tvParentId,tvName,tvMacId,tvSchoolId,tvStd,tvClass,tvStatus;
+
     Toolbar toolbar;
+    TextView toolbar_textview;
     DrawerLayout drawerLayout;
     private NavigationView navigationView;
     SPProfile spProfile;
@@ -41,8 +43,13 @@ public class StudDetailActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stud_detail);
-      /*  toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Student Detail");*/
+
+        toolbar=(Toolbar) findViewById(R.id.toolbar);
+        toolbar_textview=(TextView)findViewById(R.id.toolbar_title);
+        toolbar.setTitle("");
+        toolbar_textview.setText("Student Detail");
+        setSupportActionBar(toolbar);
+
         spProfile=new SPProfile(this);
         progressDialog=new ProgressDialog(this);
 

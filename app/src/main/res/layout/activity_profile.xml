@@ -11,16 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <!--<include
+    <include
         android:id="@+id/toolbar_main"
         layout="@layout/row_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" />-->
+        android:layout_alignParentTop="true" />
 
     <LinearLayout
         android:id="@+id/ll_basic"
-
+        android:layout_below="@id/toolbar_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -35,6 +35,7 @@
             android:textSize="20sp"
             android:textColor="#2196F3"
             android:layout_marginTop="20dp"
+            android:visibility="gone"
             android:layout_marginBottom="20dp"/>
 
         <ScrollView
