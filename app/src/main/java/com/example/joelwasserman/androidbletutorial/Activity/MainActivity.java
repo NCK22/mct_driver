@@ -109,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
                     for(int i=0;i<mListItem.size();i++)
                     {
                         Log.e("MACId",mListItem.get(i).getChildMacID());
-                        if(mListItem.get(i).getChildMacID().equalsIgnoreCase(result.getDevice().getAddress()))
+                        if(mListItem.get(i).getChildMacID().equalsIgnoreCase(result.getDevice().getAddress())
+                                && !mListItem.get(i).getFound().equalsIgnoreCase("ignore"))
                             mListItem.get(i).setFound("true");
                     }
                 }
@@ -280,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
 
+                if(btScanner!=null)
                 btScanner.startScan(leScanCallback);
             }
         });

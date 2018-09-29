@@ -18,7 +18,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="6dp">
 
@@ -36,15 +36,17 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1.60"
                         android:orientation="vertical"
-                        android:weightSum="5"
+                        android:weightSum="6"
+                        android:padding="5dp"
                         android:background="#FFFDE7">
 
                         <TextView
                             android:id="@+id/tv_name"
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:singleLine="true"
+                            android:fontFamily="calibari"
                             android:text="child name"
                             android:background="#FFFDE7"
                             android:textSize="17sp"
@@ -53,13 +55,13 @@
                             android:textColor="#000000" />
                         <Space
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
+                            android:layout_height="10dp"
                             android:layout_weight="1"
                             android:background="#FFFDE7"/>
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="2"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
                             android:weightSum="1"
                             android:orientation="horizontal">
 
@@ -77,6 +79,22 @@
                                 android:layout_height="match_parent"
                                 android:src="@drawable/ic_info"
                                 />
+
+                            <TextView
+                                android:id="@+id/tv_ignore"
+                                android:layout_width="0dp"
+                                android:layout_weight="0.50"
+                                android:text="Ignore"
+                                android:background="#FFFFFF"
+                                android:textStyle="bold"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:fontFamily="Calibari"
+                                android:textSize="16sp"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_info"
+                                />
+
                         </LinearLayout>
 
 
@@ -91,7 +109,6 @@
                         android:src="@drawable/ic_retry"
                         android:background="#EEEEEE"/>
                 </LinearLayout>
-
 
         </LinearLayout>
 

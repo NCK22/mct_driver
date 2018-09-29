@@ -45,20 +45,40 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ItemRowH
     }
 
     @Override
-    public void onBindViewHolder(ItemRowHolder holder, final int position) {
+    public void onBindViewHolder(final ItemRowHolder holder, final int position) {
         final ChildPojoStudProf singleItem = dataList.get(position);
         holder.textName.setText(singleItem.getChildName());
 
        /* if(MainActivity.list_macId.contains(singleItem.getChildMacID()))
             holder.imgStatus.setImageResource(R.drawable.ic_present);*/
 
-        if(singleItem.getFound().equalsIgnoreCase("true"))
-            holder.imgStatus.setImageResource(R.drawable.ic_present);
+       if(!singleItem.getFound().equalsIgnoreCase("ignore")) {
+           if (singleItem.getFound().equalsIgnoreCase("true"))
+               holder.imgStatus.setImageResource(R.drawable.ic_present);
+           else
+               holder.imgStatus.setImageResource(R.drawable.ic_absent);
+       }
 
       /*  holder.textDescrip.setText(singleItem.getCompDescr());
         holder.textIType.setText(singleItem.getCompIType());
         holder.textLoc.setText(singleItem.getCompLoc());
         holder.textWeb.setText(singleItem.getCompWebEmail());*/
+
+      holder.textIgnore.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+              if(holder.textIgnore.getText().toString().equalsIgnoreCase("ignore")) {
+                  singleItem.setFound("ignore");
+                  holder.imgStatus.setImageResource(R.drawable.ic_ignore);
+                  holder.textIgnore.setText("Remove from Ignore");
+              }
+              else{
+                  singleItem.setFound("");
+                  holder.imgStatus.setImageResource(R.drawable.ic_retry);
+                  holder.textIgnore.setText("Ignore");
+              }
+          }
+      });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,7 +172,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ItemRowH
 
     public class ItemRowHolder extends RecyclerView.ViewHolder {
         public ImageView imgCall,imgInfo,imgStatus;
-        public TextView textName,textDescrip,textLoc,textWeb,textIType;
+        public TextView textName,textIgnore,textDescrip,textLoc,textWeb,textIType;
         public LinearLayout lyt_parent;
         public Button btnCall,btnInfo;
 
@@ -160,7 +180,8 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ItemRowH
             super(itemView);
 
             textName = (TextView) itemView.findViewById(R.id.tv_name);
-       imgCall=(ImageView)itemView.findViewById(R.id.img_call);
+            textIgnore = (TextView) itemView.findViewById(R.id.tv_ignore);
+            imgCall=(ImageView)itemView.findViewById(R.id.img_call);
             imgInfo=(ImageView)itemView.findViewById(R.id.img_info);
             imgStatus=(ImageView)itemView.findViewById(R.id.img_status);
           /*  textDescrip = (TextView) itemView.findViewById(R.id.text_comp_description);

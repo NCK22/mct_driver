@@ -16,6 +16,6 @@ public interface setScannedByInterface {
 
    @FormUrlEncoded
    @POST("driver/scannedchild/")
-   Call<CommonParentPojo> doGetListResources(@Field("child_mac_id") String child_mac_id, @Field("scannedby_id") String scannedby_id, @Field("scannedby") String scanned_by);
+   Call<CommonParentPojo> doGetListResources(@Field("mac_id") String child_mac_id, @Field("scannedby_id") String scannedby_id, @Field("scannedby") String scanned_by);
 
 }
