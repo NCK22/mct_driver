@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.joelwasserman.androidbletutorial.APIClient;
 import com.example.joelwasserman.androidbletutorial.Adapter.StudentAdapter;
@@ -282,7 +283,16 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
 
                 if(btScanner!=null)
-                btScanner.startScan(leScanCallback);
+                    btScanner.startScan(leScanCallback);
+                else {
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+                            stopScanningButton.setVisibility(View.INVISIBLE);
+                            startScanningButton.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
             }
         });
     }
