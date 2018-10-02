@@ -120,7 +120,8 @@ public class MainActivity extends AppCompatActivity {
             //if(!peripheralTextView.getText().toString().contains(result.getDevice().getAddress()))
             if(!list_macId.contains(result.getDevice().getAddress()))
             peripheralTextView.setText("MAC ADDRESS: " + result.getDevice().getAddress() + "\nRSSI: " + result.getRssi() + "\nBondState: " + result.getDevice().getBondState() + "\nDistance: " + calculateDistance(result.getRssi()) + "\n-----------------------------------------\n");
-           adapter.notifyDataSetChanged();
+           if(adapter!=null)
+                adapter.notifyDataSetChanged();
         }
     };
 
@@ -147,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(list_macId!=null)
             list_macId.clear();
+
+        getStudentList();
 
         startScanningButton = (Button) findViewById(R.id.StartScanButton);
         startScanningButton.setOnClickListener(new View.OnClickListener() {
@@ -188,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
             builder.show();
         }
 
-        getStudentList();
+
     //    EnableRuntimePermissionToAccessCamera();
 
      //   startService(new Intent(MainActivity.this, TrackLocService.class));
