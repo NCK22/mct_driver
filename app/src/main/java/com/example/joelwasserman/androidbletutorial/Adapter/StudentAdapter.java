@@ -53,8 +53,10 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ItemRowH
             holder.imgStatus.setImageResource(R.drawable.ic_present);*/
 
        if(!singleItem.getFound().equalsIgnoreCase("ignore")) {
-           if (singleItem.getFound().equalsIgnoreCase("true"))
+           if (singleItem.getFound().equalsIgnoreCase("true")) {
                holder.imgStatus.setImageResource(R.drawable.ic_present);
+               holder.textIgnore.setVisibility(View.INVISIBLE);
+           }
            else
                holder.imgStatus.setImageResource(R.drawable.ic_absent);
        }
